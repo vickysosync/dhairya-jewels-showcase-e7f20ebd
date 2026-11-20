@@ -41,7 +41,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
           <Link to="/cart" className="relative inline-flex size-9 items-center justify-center" aria-label={`Shopping bag, ${state.cart.reduce((sum, item) => sum + item.quantity, 0)} items`}><Icon name="bag"/>{state.cart.length > 0 && <span className="absolute right-0 top-0 flex size-4 items-center justify-center rounded-full bg-primary text-[9px] text-primary-foreground">{state.cart.reduce((sum, item) => sum + item.quantity, 0)}</span>}</Link>
         </div>
       </div>
-      {searchOpen && <form action="/shop" className="mx-auto flex max-w-2xl gap-2 px-5 pb-4"><input name="q" autoFocus className="min-w-0 flex-1 border-b border-primary bg-transparent px-2 py-2 text-sm outline-none" placeholder="Search jewellery"/><Button type="submit" size="sm" className="uppercase tracking-widest">Search</Button></form>}
+      {searchOpen && <form action="/search" className="mx-auto flex max-w-2xl gap-2 px-5 pb-4"><input name="q" autoFocus className="min-w-0 flex-1 border-b border-primary bg-transparent px-2 py-2 text-sm outline-none" placeholder="Search jewellery"/><Button type="submit" size="sm" className="uppercase tracking-widest">Search</Button></form>}
       <nav aria-label="Main navigation" className={`${menuOpen ? "flex" : "hidden"} absolute left-0 right-0 top-full flex-col gap-1 border-b border-border bg-background px-5 py-4 md:static md:flex md:flex-row md:items-center md:justify-center md:gap-8 md:border-0 md:px-4 md:py-0`}>
         {navItems.map(([name, href]) => <Link key={href} to={href} onClick={() => setMenuOpen(false)} activeProps={{ className: "text-foreground" }} className="py-2 text-[10px] tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground">{name.toUpperCase()}</Link>)}
       </nav>
@@ -229,10 +229,10 @@ const moduleLabels: Record<string, keyof Pick<ReturnType<typeof useJewelryStore>
 };
 const adminNav = [["Overview", "/admin/dashboard"], ["Products", "/admin/products"], ["Categories", "/admin/categories"], ["Collections", "/admin/collections"], ["Orders", "/admin/orders"], ["Customers", "/admin/customers"], ["Banners", "/admin/banners"], ["Gallery", "/admin/gallery"], ["Testimonials", "/admin/testimonials"], ["Coupons", "/admin/coupons"], ["Newsletter", "/admin/newsletter"], ["Enquiries", "/admin/enquiries"], ["Homepage", "/admin/homepage"], ["Settings", "/admin/settings"]] as const;
 
-export function AdminPanel({ module }: { module: string }) {
+export function AdminPanel({ module, startAdding = false }: { module: string; startAdding?: boolean }) {
   const { state, update, reset } = useJewelryStore();
   const [search, setSearch] = useState("");
-  const [modal, setModal] = useState<{ action: "view" | "edit" | "add" | "delete"; id?: string } | null>(null);
+  const [modal, setModal] = useState<{ action: "view" | "edit" | "add" | "delete"; id?: string } | null>(startAdding ? { action: "add" } : null);
   const [mobileNav, setMobileNav] = useState(false);
   const [toast, setToast] = useState("");
   const [productForm, setProductForm] = useState<Partial<Product>>({});
@@ -340,7 +340,7 @@ function ConfirmationInner() {
 }
 export function OrderConfirmation() { return <PublicLayout><ConfirmationInner/></PublicLayout>; }
 
-export function ProtectedAdminPanel({ module }: { module: string }) {
+export function ProtectedAdminPanel({ module, startAdding = false }: { module: string; startAdding?: boolean }) {
   const [authed, setAuthed] = useState<boolean | null>(null);
   useEffect(() => {
     const ok = localStorage.getItem("dhairya-admin-demo-session") === "active";
@@ -349,5 +349,5 @@ export function ProtectedAdminPanel({ module }: { module: string }) {
     setAuthed(ok);
   }, [module]);
   if (authed === null) return <div className="min-h-screen bg-background"/>;
-  return module === "login" ? <AdminLogin/> : <AdminPanel module={module}/>;
+  return module === "login" ? <AdminLogin/> : <AdminPanel module={module} startAdding={startAdding}/>;
 }

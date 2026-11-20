@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CollectionDetail } from "@/components/jewelry-app";
 
-export const Route = createFileRoute("/collections/$slug")({
+export const Route = createFileRoute("/collections_/$slug")({
   head: () => ({ meta: [
     { title: "Collection | Dhairya Gems & Jewels" },
     { name: "description", content: "Explore a curated Dhairya Gems and Jewels collection." },
