@@ -1,0 +1,4 @@
+- [ ] Integrate the repository's existing storefront, design tokens, and local jewellery photography into this project.
+- [ ] Add individual public, product, collection, search, checkout-confirmation, and demo-admin routes.
+- [ ] Repair repository gaps and errors in navigation, session-protected admin screens, and persisted shopping interactions.
+- [ ] Verify route matching, core storefront and order flow, mobile layout, and preview build diagnostics.
